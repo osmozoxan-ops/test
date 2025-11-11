@@ -1,0 +1,17 @@
+
+*{
+   font-family: "Roboto", sans-serif;
+   box-sizing: border-box;
+}
+#app {
+  display: flex;
+    justify-content: center;
+    width: 100%;
+}
+@media (min-width: 1024px) {
+  body {
+    display: flex;
+    place-items: center;
+  }
+
+}

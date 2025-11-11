@@ -16,7 +16,10 @@ let chartInstance = null;
 const colors = computed(() =>[
   ['red', 'красный'],
   ['blue', 'синий'],
-  ['green', 'зеленый']
+  ['green', 'зеленый'],
+  ['yellow', 'желтый'],
+  ['black', 'черный'],
+  ['pink', 'розовый']
 ])
 
 

@@ -11,6 +11,8 @@ const checkpopUp = ref(false);
 const nameInput = ref('');
 const chartRef = ref(null);
 const percentInput = ref(null);
+const checkEdit = ref(false);
+const indexList = ref(0);
 let chartInstance = null;
 
 const colors = computed(() =>[
@@ -91,21 +93,28 @@ const editLabelToArray = (index) => {
   nameInput.value = chartList.value[index].label;
   percentInput.value = chartList.value[index].data;
   color.value = chartList.value[index].color;
+  checkEdit.value = true;
+  indexList.value = index;
 }
 
 const addLabelToArray = () => {
-  if (nameInput.value && percentInput.value !== null) {
+  if (checkEdit.value === true){
+    chartList.value.splice(indexList.value, 1, {
+      label: nameInput.value,
+      data: percentInput.value,
+      color: color.value});
+  }
+  else if (nameInput.value && percentInput.value !== null) {
     chartList.value.push({
       label: nameInput.value,
       data: percentInput.value,
       color: color.value
     })
-
-    nameInput.value = '';
-    percentInput.value = null;
-    updateChart();
-    closePopup();
   }
+  nameInput.value = '';
+  percentInput.value = null;
+  updateChart();
+  closePopup();
 }
 
 const updateChart = () => {
@@ -191,7 +200,7 @@ onUnmounted(() => {
     </div>
   </div>
 
-  <div v-show="checkpopUp" class="blackBack" @click.self="checkpopUp = !checkpopUp">
+  <div v-show="checkpopUp" class="blackBack" @click.self="checkpopUp = !checkpopUp; checkEdit = false;">
     <div class="popup">
       <h3>Добавления сектора</h3>
       <div class="text-field text-field_floating">
@@ -202,9 +211,8 @@ onUnmounted(() => {
         <input class="text-field__input" type="number" placeholder="Значение" v-model.number="percentInput">
         <label class="text-field__label">Значение</label>
       </div>
-      <div class="text-field text-field_floating">
-        <!-- <input class="text-field__input" type="search" placeholder="Цвет"> -->
-        <select v-model="color" >
+      <div class="arrow text-field text-field_floating">
+        <select class="text-field__input" v-model="color" >
           <option v-for="[colorCode, colorName] in colors" :value="colorCode" :key="colorCode"> {{ colorName }}</option>
         </select>
         <label class="text-field__label">Цвет</label>
@@ -213,6 +221,7 @@ onUnmounted(() => {
             'width': '25px',
             'height': '25px',
             'border-radius': '25px',
+            'margin-right': '20px',
             background: color
           }"></div>
         </div>
@@ -233,6 +242,39 @@ onUnmounted(() => {
 
 
 <style scoped>
+.arrow select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  padding: 8px 30px 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 100%;
+}
+input, select{
+  border: 1px solid #DBDFE9;
+}
+input:focus, select:focus{
+  border-color: #1B84FF;
+  outline: none;
+}
+.arrow::after {
+  content: "";
+  position: absolute;
+  top: 20px;
+  width: 25px;
+  height: 25px;
+  right: 10px;
+  background-image: url(/arrow.svg);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 100%;
+}
+h3{
+  margin-top: 0;
+  font-size: 20px;
+  color: #252F4A;
+}
 .color-picker > *{
   width: 100%;
 }
@@ -330,7 +372,6 @@ onUnmounted(() => {
   margin: 0;
   font-size: 16px;
   width: 100%;
-  border: 1px solid #DBDFE9;
   border-radius: 10px;
 }
 
